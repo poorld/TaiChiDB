@@ -43,18 +43,20 @@ public class TaiChi {
     }
 
 
-    public void add(String key, String value) {
+    public boolean add(String key, String value) {
         TYPE type = mKeys.get(key);
         if (type != null) {
-            op(key, value, type, OPERATION_ADD);
+            return op(key, value, type, OPERATION_ADD);
         }
+        return false;
     }
 
-    public void delete(String key, String value) {
+    public boolean delete(String key, String value) {
         TYPE type = mKeys.get(key);
         if (type != null) {
-            op(key, value, type, OPERATION_DELETE);
+            return op(key, value, type, OPERATION_DELETE);
         }
+        return false;
     }
 
     public void deleteAll(String key) {
@@ -69,6 +71,12 @@ public class TaiChi {
             case System:
                 Settings.System.putString(mContentResolver, key, "");
                 break;
+        }
+    }
+
+    public void update(String key, String oldValue, String newValue) {
+        if (delete(key, oldValue)) {
+            add(key, newValue);
         }
     }
 
@@ -98,16 +106,16 @@ public class TaiChi {
         return null;
     }
 
-    private void op(String key, String value, TYPE type, int operation) {
+    private boolean op(String key, String value, TYPE type, int operation) {
         if (TextUtils.isEmpty(value)) {
-            return;
+            return false;
         }
         if (value.contains(splitChar)) {
-            return;
+            return false;
         }
         Set<String> list = query(key);
         if (operation == OPERATION_DELETE && list == null) {
-            return;
+            return false;
         }
 
         if (operation == OPERATION_ADD && list == null) {
@@ -120,7 +128,7 @@ public class TaiChi {
         Log.d(TAG, "result: " + result);
 
         if (!result) {
-            return;
+            return false;
         }
         String collect = list.stream().collect(Collectors.joining(splitChar));
         Log.d(TAG, "collect:" + collect);
@@ -135,7 +143,7 @@ public class TaiChi {
                 Settings.System.putString(mContentResolver, key, collect);
                 break;
         }
-
+        return true;
     }
 
 }

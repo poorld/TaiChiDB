@@ -106,21 +106,38 @@ public class TaiChi {
         return null;
     }
 
+<<<<<<< HEAD:TaiChi.java
     private boolean op(String key, String value, TYPE type, int operation) {
+=======
+    private boolean op(DBKey key, String value, int operation) {
+        Log.d(TAG, String.format("op: key=%s,value=%s,type=%s,op=%d", key, value, key.getType(), operation));
+>>>>>>> 2b25697 (update):TaiChi.txt
         if (TextUtils.isEmpty(value)) {
             return false;
         }
         if (value.contains(splitChar)) {
             return false;
         }
-        Set<String> list = query(key);
+        List<String> list = query(key);
+        Log.d(TAG, "query: " + list);
         if (operation == OPERATION_DELETE && list == null) {
+<<<<<<< HEAD:TaiChi.java
+=======
+            Log.d(TAG, "op: return");
+>>>>>>> 2b25697 (update):TaiChi.txt
             return false;
         }
 
-        if (operation == OPERATION_ADD && list == null) {
-            list = new HashSet<>();
+        if (operation == OPERATION_ADD) {
+            if (list == null) {
+                Log.d(TAG, "op: new list");
+                list = new ArrayList<>();
+            } else if (list.contains(value)) {
+                Log.d(TAG, "list contains " + value);
+                return true;
+            }
         }
+
 
         boolean result =
                 operation == OPERATION_ADD ? list.add(value) :
@@ -132,18 +149,29 @@ public class TaiChi {
         }
         String collect = list.stream().collect(Collectors.joining(splitChar));
         Log.d(TAG, "collect:" + collect);
-        switch (type) {
-            case Global:
-                Settings.Global.putString(mContentResolver, key, collect);
-                break;
-            case Secure:
-                Settings.Secure.putString(mContentResolver, key, collect);
-                break;
-            case System:
-                Settings.System.putString(mContentResolver, key, collect);
-                break;
+        long ident = Binder.clearCallingIdentity();
+        try {
+            switch (key.getType()) {
+                case Global:
+                    Settings.Global.putString(mContentResolver, key.getKey(), collect);
+                    break;
+                case Secure:
+                    Settings.Secure.putString(mContentResolver, key.getKey(), collect);
+                    break;
+                case System:
+                    Settings.System.putString(mContentResolver, key.getKey(), collect);
+                    break;
+            }
+        } finally {
+            Binder.restoreCallingIdentity(ident);
         }
+<<<<<<< HEAD:TaiChi.java
         return true;
+=======
+
+        return true;
+
+>>>>>>> 2b25697 (update):TaiChi.txt
     }
 
 }

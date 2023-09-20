@@ -106,12 +106,8 @@ public class TaiChi {
         return null;
     }
 
-<<<<<<< HEAD:TaiChi.java
-    private boolean op(String key, String value, TYPE type, int operation) {
-=======
     private boolean op(DBKey key, String value, int operation) {
         Log.d(TAG, String.format("op: key=%s,value=%s,type=%s,op=%d", key, value, key.getType(), operation));
->>>>>>> 2b25697 (update):TaiChi.txt
         if (TextUtils.isEmpty(value)) {
             return false;
         }
@@ -121,10 +117,7 @@ public class TaiChi {
         List<String> list = query(key);
         Log.d(TAG, "query: " + list);
         if (operation == OPERATION_DELETE && list == null) {
-<<<<<<< HEAD:TaiChi.java
-=======
             Log.d(TAG, "op: return");
->>>>>>> 2b25697 (update):TaiChi.txt
             return false;
         }
 
@@ -165,13 +158,9 @@ public class TaiChi {
         } finally {
             Binder.restoreCallingIdentity(ident);
         }
-<<<<<<< HEAD:TaiChi.java
-        return true;
-=======
 
         return true;
 
->>>>>>> 2b25697 (update):TaiChi.txt
     }
 
 }

@@ -422,7 +422,7 @@ public class TinyDBManager {
             return false;
         }
         try {
-            tinyDB.contains(key, value);
+            return tinyDB.contains(key, value);
         } catch (RemoteException e) {
         }
         return false;
